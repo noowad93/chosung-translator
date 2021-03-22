@@ -8,6 +8,7 @@ from transformers import PreTrainedTokenizerFast, BartForConditionalGeneration
 from torch.optim.adam import Adam
 import torch.nn.functional as F
 import torch.nn as nn
+from tqdm import tqdm
 
 from chosung_translator.config import TrainConfig
 from chosung_translator.data import ChosungTranslatorDataset
@@ -18,6 +19,7 @@ def train(
     config: TrainConfig,
     model: BartForConditionalGeneration,
     train_dataloader: DataLoader,
+    dev_dataloader: DataLoader,
     optimizer: Adam,
     logger: logging.Logger,
     device=torch.device,
@@ -54,17 +56,39 @@ def train(
                 )
                 loss_sum = 0.0
             if global_step % config.dev_log_interval == 0:
-                _validate(global_step)
+                _validate(model, dev_dataloader, logger, device)
             if global_step % config.save_interval == 0:
-                _save_model(model, config.save_model_file_prefix, global_step)
+                model.save_pretrained(f"{config.save_model_file_prefix}_{global_step}")
+
+
+def _validate(
+    model: BartForConditionalGeneration,
+    dev_dataloader: DataLoader,
+    logger: logging.Logger,
+    device: torch.device,
+):
+    model.eval()
+    loss_sum = 0.0
+    with torch.no_grad():
+        for data in tqdm(dev_dataloader):
+            data = _change_device(data, device)
+            output = model.forward(
+                input_ids=data[0],
+                attention_mask=data[1],
+                decoder_input_ids=data[2],
+                labels=data[3],
+                decoder_attention_mask=data[4],
+                return_dict=True,
+            )
+            loss = output["loss"]
+            loss_sum += loss.item()
+    mean_loss = loss_sum / len(dev_dataloader)
+    logger.info(f"[Validation] Loss {mean_loss:.4f} Perplexity {math.exp(mean_loss):8.2f}")
+    model.train()
 
 
 def _change_device(data: Tuple[torch.Tensor, ...], device: torch.device):
     return tuple((data[0].to(device), data[1].to(device), data[2].to(device), data[3].to(device), data[4].to(device)))
-
-
-def _validate(global_step: int):
-    return global_step
 
 
 def _save_model(model: nn.Module, save_model_file_prefix: str, step: int):
@@ -115,7 +139,7 @@ def main():
     # Train
     optimizer = Adam(model.parameters(), lr=config.learning_rate)
     criterion = nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
-    train(config, model, train_dataloader, optimizer, logger, device)
+    train(config, model, train_dataloader, dev_dataloader, optimizer, logger, device)
 
 
 if __name__ == "__main__":
