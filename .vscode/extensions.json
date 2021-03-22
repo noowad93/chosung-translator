@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+      "ms-pyright.pyright",
+      "ms-python.python"
+  ]
+}

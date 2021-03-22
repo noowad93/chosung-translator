@@ -1,0 +1,91 @@
+version: 2.1
+
+executors:
+  python-executor:
+    working_directory: ~/python-37-template
+    docker:
+      - image: circleci/python:3.7
+
+jobs:
+  run-test:
+    executor: python-executor
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+
+      - run:
+          name: Create Virtual Environment and Install Dependencies
+          command: |
+            virtualenv env
+            . env/bin/activate
+            pip install -r requirements.txt -r requirements-dev.txt
+
+      - save_cache:
+          key: deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+          paths:
+            - "env"
+
+      - run:
+          name: Run Tests
+          command: |
+            . env/bin/activate
+            pytest --cov-branch --cov pack
+
+      - run:
+          name: Upload coverage report
+          command: |
+            . env/bin/activate
+            coveralls
+
+  check-linting:
+    executor: python-executor
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+
+      - run:
+          name: Create Virtual Environment and Install Dependencies
+          command: |
+            virtualenv env
+            . env/bin/activate
+            pip install -r requirements.txt -r requirements-dev.txt
+
+      - save_cache:
+          key: deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+          paths:
+            - "env"
+
+      - run:
+          name: Run black, flake8, isort
+          command: |
+            . env/bin/activate
+            black --check pack tests
+            flake8 pack tests
+            isort -rc -c pack tests
+
+  check-git-convention:
+    executor: python-executor
+    steps:
+      - checkout
+
+      - run:
+          name: Check Branch Name
+          command: |
+            curl -sSL https://scatterlab-ci-scripts.s3.ap-northeast-2.amazonaws.com/branch_name_checker.sh | bash
+
+      - run:
+          name: Check Commit Message
+          command: |
+            curl -sSL https://scatterlab-ci-scripts.s3.ap-northeast-2.amazonaws.com/commit_message_checker.sh | bash
+
+workflows:
+  version: 2
+  python-37-workflow:
+    jobs:
+      - run-test
+      - check-linting
+      - check-git-convention
