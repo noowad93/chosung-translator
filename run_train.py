@@ -56,7 +56,7 @@ def train(
             if global_step % config.dev_log_interval == 0:
                 _validate(global_step)
             if global_step % config.save_interval == 0:
-                _save_model(model, global_step)
+                _save_model(model, config.save_model_file_prefix, global_step)
 
 
 def _change_device(data: Tuple[torch.Tensor, ...], device: torch.device):
@@ -67,12 +67,12 @@ def _validate(global_step: int):
     return global_step
 
 
-def _save_model(model: nn.Module, step: int):
+def _save_model(model: nn.Module, save_model_file_prefix: str, step: int):
     """ 모델을 지정된 경로에 저장하는 함수입니다. """
     if isinstance(model, nn.DataParallel):
-        torch.save(model.module.state_dict(), f"{self.config.save_model_file_prefix}_step_{step}.pth")
+        torch.save(model.module.state_dict(), f"{save_model_file_prefix}_step_{step}.pth")
     else:
-        torch.save(model.state_dict(), f"{self.config.save_model_file_prefix}_step_{step}.pth")
+        torch.save(model.state_dict(), f"{save_model_file_prefix}_step_{step}.pth")
 
 
 def main():

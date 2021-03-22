@@ -18,6 +18,7 @@ class ChosungTranslatorDataset(Dataset):
 
         tokenized_chosung_text = self.tokenizer.tokenize(chosung_text)
         encoder_input_ids = self.tokenizer.convert_tokens_to_ids(tokenized_chosung_text)
+        encoder_input_ids = token_ids[: self.max_seq_len - 1]
 
         tokenized_text = self.tokenizer.tokenize(self.texts[index])
         token_ids = self.tokenizer.convert_tokens_to_ids(tokenized_text)
