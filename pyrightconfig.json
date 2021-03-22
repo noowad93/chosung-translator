@@ -1,5 +1,5 @@
 {
-  "include": ["pack"],
+  "include": ["chosung_translator"],
   "venvPath": "env",
 
   "reportUnknownVariableType": true,

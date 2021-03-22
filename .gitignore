@@ -105,3 +105,4 @@ venv.bak/
 
 # editor specific
 .vscode/settings.json
+.vscode/sftp.json
