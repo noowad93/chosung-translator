@@ -25,11 +25,11 @@ def main(args):
     model.eval()
     model.to(device)
 
-    examples = ["배고프다", "너무너무 사랑해요", "나는 너를 좋아해"]
+    examples = ["배고프다", "너무너무 사랑해요", "나는 너를 좋아해", "저의 취미는 축구입니다", "어제 무슨 영화 봤어?","짜장면 짬뽕 탕수육 먹었어"]
 
     for example in examples:
         chosung_example = convert_text_to_chosung(example)
-        # insert [SEPT] between input utterances
+
         input_ids = (
             torch.tensor(tokenizer.convert_tokens_to_ids(tokenizer.tokenize(chosung_example))).unsqueeze(0).to(device)
         )
@@ -44,7 +44,8 @@ def main(args):
                 pad_token_id=tokenizer.pad_token_id,
                 bos_token_id=tokenizer.bos_token_id,
                 eos_token_id=tokenizer.eos_token_id,
-                num_return_sequences=10,
+                decoder_start_token_id=tokenizer.bos_token_id,
+                num_return_sequences=5,
             )
         elif args.decoding_method == "beam_search":
             outputs = model.generate(
@@ -54,7 +55,8 @@ def main(args):
                 pad_token_id=tokenizer.pad_token_id,
                 bos_token_id=tokenizer.bos_token_id,
                 eos_token_id=tokenizer.eos_token_id,
-                num_return_sequences=10,
+                decoder_start_token_id=tokenizer.bos_token_id,
+                num_return_sequences=5,
             )
         else:
             raise ValueError("Enter the right decoding method (top_p or beam_search)")

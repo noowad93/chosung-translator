@@ -23,7 +23,7 @@ class TrainConfig(NamedTuple):
     #: max seq len
     max_seq_len: int = 48
 
-    train_log_interval: int = 10
+    train_log_interval: int = 100
     dev_log_interval: int = 1000
     save_interval: int = 1000
     """
@@ -35,4 +35,4 @@ class TrainConfig(NamedTuple):
     dev_file_path: str = "/nas/home/noowad/chosung-translator/data/dev.txt"
     pretrained_model_name: str = "hyunwoongko/kobart"
     #: 모델이 저장될 경로
-    save_model_file_prefix: str = "./checkpoints/"
+    save_model_file_prefix: str = "./checkpoints/chosung_translator"

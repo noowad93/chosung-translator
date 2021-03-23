@@ -1,14 +1,14 @@
-import torch
 import logging
+import math
 import sys
 from typing import Tuple
-import math
-from torch.utils.data import DataLoader
-from transformers import PreTrainedTokenizerFast, BartForConditionalGeneration
-from torch.optim.adam import Adam
-import torch.nn.functional as F
+
+import torch
 import torch.nn as nn
+from torch.optim.adam import Adam
+from torch.utils.data import DataLoader
 from tqdm import tqdm
+from transformers import BartForConditionalGeneration, PreTrainedTokenizerFast
 
 from chosung_translator.config import TrainConfig
 from chosung_translator.data import ChosungTranslatorDataset
@@ -138,7 +138,6 @@ def main():
 
     # Train
     optimizer = Adam(model.parameters(), lr=config.learning_rate)
-    criterion = nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
     train(config, model, train_dataloader, dev_dataloader, optimizer, logger, device)
 
 

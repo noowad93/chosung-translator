@@ -4,6 +4,7 @@ import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerFast
+
 from chosung_translator.utils import convert_text_to_chosung
 
 
