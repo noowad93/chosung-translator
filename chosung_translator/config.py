@@ -30,9 +30,9 @@ class TrainConfig(NamedTuple):
     Data Hyperparameters
     """
     #: training data 파일 경로
-    train_file_path: str = "/nas/home/noowad/chosung-translator/data/train.txt"
+    train_file_path: str = "./data/train_example.txt"
     #: dev data 파일 경로
-    dev_file_path: str = "/nas/home/noowad/chosung-translator/data/dev.txt"
+    dev_file_path: str = "./data/dev_example.txt"
     pretrained_model_name: str = "hyunwoongko/kobart"
     #: 모델이 저장될 경로
     save_model_file_prefix: str = "./checkpoints/chosung_translator"
