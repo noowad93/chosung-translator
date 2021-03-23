@@ -91,14 +91,6 @@ def _change_device(data: Tuple[torch.Tensor, ...], device: torch.device):
     return tuple((data[0].to(device), data[1].to(device), data[2].to(device), data[3].to(device), data[4].to(device)))
 
 
-def _save_model(model: nn.Module, save_model_file_prefix: str, step: int):
-    """ 모델을 지정된 경로에 저장하는 함수입니다. """
-    if isinstance(model, nn.DataParallel):
-        torch.save(model.module.state_dict(), f"{save_model_file_prefix}_step_{step}.pth")
-    else:
-        torch.save(model.state_dict(), f"{save_model_file_prefix}_step_{step}.pth")
-
-
 def main():
     # Config
     config = TrainConfig()
