@@ -21,3 +21,6 @@ python run_inference.py --finetuned-model-path $FINETUNED_MODEL_PATH
 ## Notes
 - 본 레포는 별도의 학습 데이터를 포함하고 있지 않습니다.
 - 본 레포의 라이센스는 [Ko-BART](https://github.com/SKT-AI/KoBART)의 `modified-MIT` 라이센스를 따릅니다.
+
+## Todo
+- 테스트 코드 추가
