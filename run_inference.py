@@ -1,10 +1,8 @@
 import argparse
-import random
 
-import numpy as np
 import torch
+from transformers import BartForConditionalGeneration, PreTrainedTokenizerFast
 
-from transformers import PreTrainedTokenizerFast, BartForConditionalGeneration
 from chosung_translator.utils import convert_text_to_chosung
 
 parser = argparse.ArgumentParser()
@@ -25,7 +23,7 @@ def main(args):
     model.eval()
     model.to(device)
 
-    examples = ["배고프다", "너무너무 사랑해요", "나는 너를 좋아해", "저의 취미는 축구입니다", "어제 무슨 영화 봤어?","짜장면 짬뽕 탕수육 먹었어"]
+    examples = ["배고프다", "너무너무 사랑해요", "나는 너를 좋아해", "저의 취미는 축구입니다", "어제 무슨 영화 봤어?", "짜장면 짬뽕 탕수육 먹었어"]
 
     for example in examples:
         chosung_example = convert_text_to_chosung(example)
