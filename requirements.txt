@@ -1,4 +1,4 @@
 transformers
 torch
 tqdm
-python-magic-bin
+python-magic
