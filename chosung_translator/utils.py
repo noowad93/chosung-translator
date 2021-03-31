@@ -25,6 +25,6 @@ def convert_text_to_chosung(text: str) -> str:
 
 
 def _get_file_encoding_type(file_path: str) -> str:
-    blob = open(file_path, 'rb').read()
+    blob = open(file_path, "rb").read()
     m = Magic(mime_encoding=True)
     return m.from_buffer(blob)
