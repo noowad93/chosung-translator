@@ -1,11 +1,14 @@
 from typing import List
 
+from magic import Magic
+
 CHOSUNG_LIST = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"]
 
 
 def load_data(file_path: str) -> List[str]:
     texts = []
-    with open(file_path, "r") as f:
+    encoding_type = _get_file_encoding_type(file_path)
+    with open(file_path, "r", encoding=encoding_type) as f:
         for line in f:
             texts.append(line.strip())
     return texts
@@ -19,3 +22,9 @@ def convert_text_to_chosung(text: str) -> str:
         else:
             chosung_text += c
     return chosung_text
+
+
+def _get_file_encoding_type(file_path: str) -> str:
+    blob = open(file_path, 'rb').read()
+    m = Magic(mime_encoding=True)
+    return m.from_buffer(blob)
